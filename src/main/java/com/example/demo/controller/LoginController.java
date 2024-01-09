@@ -10,26 +10,48 @@ import com.example.demo.service.LoginService;
 
 import lombok.RequiredArgsConstructor;
 
+
+/**
+ * ログイン画面Controller
+ * 
+ * @author 81906
+ *
+ */
 @Controller
 @RequiredArgsConstructor
 public class LoginController {
 	
+	/**ログイン画面Service*/
 	private final LoginService service;
 
+	/**
+	 * 初期表示
+	 * @param modelモデル
+	 * @param form入力情報
+	 * @return 表示画面
+	 */
 	@GetMapping("/login")
 	public String view(Model model, LoginForm form) {
 		
-		return "login"; //login.htmlをする
+		return "login"; //login.htmlを返す
 	}
 	
+	/**
+	 * ログイン
+	 * @param modelモデル
+	 * @param form入力情報
+	 * @return 表示画面
+	 */
 	@PostMapping("/login")
 	public String login(Model model, LoginForm form) {
 		var userInfo = service.searchUserById(form.getLoginId());
+		//　TODO　パスワードはハッシュ化したものを私用する
 		var isCorrectUserAuth = userInfo.isPresent() 
 				&& form.getPassword().equals(userInfo.get().getPassword());
 		if(isCorrectUserAuth) {
 			return "redirect:/menu";
 		}else {
+			//　TODO　エラーメッセージはプロパティファイルで一元管理する
 			model.addAttribute("errorMsg","IDとPASSの組み合わせが間違っています。");
 			return "login";
 		}
