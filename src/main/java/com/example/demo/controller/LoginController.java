@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,9 @@ public class LoginController {
 	
 	/**ログイン画面Service*/
 	private final LoginService service;
+	
+	/** PasswordEncoder*/
+	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * 初期表示
@@ -45,9 +49,8 @@ public class LoginController {
 	@PostMapping("/login")
 	public String login(Model model, LoginForm form) {
 		var userInfo = service.searchUserById(form.getLoginId());
-		//　TODO　パスワードはハッシュ化したものを私用する
-		var isCorrectUserAuth = userInfo.isPresent() 
-				&& form.getPassword().equals(userInfo.get().getPassword());
+		var isCorrectUserAuth = userInfo.isPresent()
+				&& passwordEncoder.matches(form.getPassword(), userInfo.get().getPassword());
 		if(isCorrectUserAuth) {
 			return "redirect:/menu";
 		}else {
