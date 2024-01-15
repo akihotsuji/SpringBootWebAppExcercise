@@ -12,5 +12,4 @@ public class BeanDifine {
 		return new BCryptPasswordEncoder();
 	}
 	
-
 }
